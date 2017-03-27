@@ -1,0 +1,86 @@
+server:
+    port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.0.38:11111/eureka/
+    register_with_eureka: true
+  instance:
+       prefer-ip-address: true
+
+spring:
+  application:
+    name: pay-stock-system
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://192.168.0.35:3306/stock?characterEncoding=utf-8&useSSL=false&zeroDateTimeBehavior=convertToNull&useNewIO=true&autoReconnectForPools=true
+    username: root
+    password: nidaye
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 50
+      max-wait: 60000
+      time-between-eviction-runsMillis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-on-borrow: true
+      test-while-idle: true
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,log4j
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+  redis:
+      host: 192.168.0.35
+      password:
+      database: 3
+      port: 6379
+      pool:
+        max-active: 50
+        max-idle: 15
+        min-idle: 5
+  messages:
+      basename: ValidationMessages,errors,messages_zh
+  cloud:
+      bus:
+        enabled: false
+logging:
+  level:
+    org.springframework : ERROR
+    org.apache.catalina: ERROR
+    com.yql.biz: debug
+
+yql:
+  mq:
+    AccessKey: LTAIukPGqYkArvKd
+    SecretKey: uySPaK3rIxN5EuIjF8Rsbdbvxlkvvf
+    ONSAddr: http://onsaddr-internet.aliyun.com/rocketmq/nsaddr4client-internet
+    producer:
+      ProducerId: PID_YQL_PAY_SERVER
+    consumer:
+      ConsumerId: CID_YQL_PAY_SERVER
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000
